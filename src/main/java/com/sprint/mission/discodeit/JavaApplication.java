@@ -15,6 +15,8 @@ public class JavaApplication {
         userService.save(user);
         User user2 = new User("test2", "test@email.com", "1234", "test");
         userService.save(user2);
+        User user3 = new User("test3", "test@email.com", "1234", "test");
+        userService.save(user3);
         System.out.println(userService.findById(user.getId()));
 
         System.out.println("---------- 사용자 테스트 끝 ----------\n");

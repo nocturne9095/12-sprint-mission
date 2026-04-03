@@ -1,24 +1,21 @@
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
+import com.sprint.mission.discodeit.service.Service;
+import com.sprint.mission.discodeit.service.jcf.JCFService;
 
 public class JavaApplication {
     public static void main(String[] args) {
-
         //사용자 테스트 시작
-        System.out.println("---------- 사용자 테스트 시작 ----------");
-        UserService userService = new JCFUserService();
+        System.out.println("----------사용자 테스트 시작----------");
+        Service service = new JCFService();
 
-        User user = new User("test", "test@email.com", "1234", "test");
-        userService.save(user);
-        User user2 = new User("test2", "test@email.com", "1234", "test");
-        userService.save(user2);
-        User user3 = new User("test3", "test@email.com", "1234", "test");
-        userService.save(user3);
-        System.out.println(userService.findById(user.getId()));
 
-        System.out.println("---------- 사용자 테스트 끝 ----------\n");
+        User user = new User("test1", "test@email.com", "1234", "test1");
+        service.save(user);
+        System.out.println(service.findAll());
+
+
+        System.out.println("----------사용자 테스트 끝----------");
     }
 }

@@ -1,17 +1,18 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class JCFUserService implements UserService {
+import static java.util.Locale.filter;
 
-   private final List<User> data;
+public class JCFService implements Service {
+    private final List<User> data;
 
-    public JCFUserService() {
+    public JCFService() {
         data = new ArrayList<>();
     }
 
@@ -23,8 +24,8 @@ public class JCFUserService implements UserService {
 
     @Override
     public User findById(UUID id) {
-        for(User user : data){
-            if(user.getId().equals(id)){
+        for (User user : data) {
+            if (user.getId().equals(id)) {
                 return user;
             }
         }

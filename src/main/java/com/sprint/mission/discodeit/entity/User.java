@@ -8,18 +8,18 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private String nickname;
-    private long createAt;
-    private long updateAt;
+    private String nickName;
+    private Long createdAt;
+    private Long updatedAt;
 
-    public User(String username, String email, String password, String nickname) {
+    public User(String username, String email, String password, String nickName) {
         id = UUID.randomUUID();
         this.username = username;
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
-        createAt = System.currentTimeMillis();
-        updateAt = System.currentTimeMillis();
+        this.nickName = nickName;
+        createdAt = System.currentTimeMillis();
+        updatedAt = System.currentTimeMillis();
     }
 
     public UUID getId() {
@@ -38,25 +38,24 @@ public class User {
         return password;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return nickName;
     }
 
-    public long getCreateAt() {
-        return createAt;
+    public Long getCreatedAt() {
+        return createdAt;
     }
 
-    public long getUpdateAt() {
-        return updateAt;
+    public Long getUpdatedAt() {
+        return updatedAt;
     }
 
-
-    public void update(String username, String email, String password, String nickname) {
+    public void update(String username, String email, String password, String nickName) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
-        updateAt = System.currentTimeMillis();
+        this.nickName = nickName;
+        updatedAt = System.currentTimeMillis();
     }
 
     @Override
@@ -66,9 +65,9 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", createAt=" + createAt +
-                ", updateAt=" + updateAt +
+                ", nickName='" + nickName + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

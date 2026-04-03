@@ -11,8 +11,10 @@ public class JavaApplication {
         Service service = new JCFService();
 
 
-        User user = new User("test1", "test@email.com", "1234", "test1");
-        service.save(user);
+        User user1 = new User("test1", "test1@email.com", "12341", "test1");
+        User user2 = new User("test2", "test2@email.com", "12342", "test2");
+
+        service.save(user1);
         System.out.println(service.findAll());
 
 

@@ -14,12 +14,12 @@ public class JCFUserRepository implements UserRepository {
     }
 
     @Override
-    public User fid(UUID id) {
+    public User find(UUID id) {
         return database.get(id);
     }
 
     @Override
-    public List<User> finaAll() {
+    public List<User> findAll() {
         return new ArrayList<>(database.values());
     }
 

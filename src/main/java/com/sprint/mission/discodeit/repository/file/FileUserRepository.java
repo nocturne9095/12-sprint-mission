@@ -16,7 +16,11 @@ public class FileUserRepository implements UserRepository {
         }
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (Map<UUID, User>) ois.readObject();
+            Object obj = ois.readObject();
+            if (obj instanceof Map) {
+                return (Map<UUID, User>) obj;
+            }
+            return new HashMap<>();
         } catch (IOException | ClassNotFoundException e) {
             return new HashMap<>();
         }
@@ -26,10 +30,9 @@ public class FileUserRepository implements UserRepository {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))){
             oos.writeObject(data);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("파일 쓰기 실패", e);
         }
     }
-
 
     @Override
     public void save(User user) {
@@ -39,12 +42,12 @@ public class FileUserRepository implements UserRepository {
     }
 
     @Override
-    public User fid(UUID id) {
+    public User find(UUID id) {
         return readFile().get(id);
     }
 
     @Override
-    public List<User> finaAll() {
+    public List<User> findAll() {
         return new ArrayList<>(readFile().values());
     }
 

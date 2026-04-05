@@ -11,13 +11,16 @@ public class Channel implements Serializable {
     private long updatedAt;
     private String name;
     private String description;
+    private final ChannelType type;
 
-    public Channel(String name, String description) {
+
+    public Channel(String name, String description, ChannelType type) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
         this.name = name;
         this.description = description;
+        this.type = type;
     }
 
     public void update(String name, String description) {
@@ -45,5 +48,10 @@ public class Channel implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public ChannelType getType() {
+        return type;
+    }
 }
+
 

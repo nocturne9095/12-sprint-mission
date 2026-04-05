@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface MessageService {
     Message create(Message message);
-    Message findById(UUID id);
+    Message find(UUID id);
     List<Message> findAll();
     Message update(UUID id, Message message);
     void delete(UUID id);

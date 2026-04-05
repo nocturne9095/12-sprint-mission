@@ -23,7 +23,7 @@ public class FileUserRepository implements UserRepository {
     }
 
     private void writeFile(Map<UUID, User> data) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new ObjectOutputStream(filePath))){
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))){
             oos.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();

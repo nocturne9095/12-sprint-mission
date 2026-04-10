@@ -4,7 +4,6 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 
 import java.io.*;
-<<<<<<< HEAD
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,49 +59,10 @@ public class FileMessageRepository implements MessageRepository {
             }
         }
         return Optional.ofNullable(messageNullable);
-=======
-import java.util.*;
-
-public class FileMessageRepository implements MessageRepository {
-    private final String filePath = "messages.dat";
-
-    private Map<UUID, Message> readFile() {
-        File file = new File(filePath);
-        if(!file.exists()) {
-            return new HashMap<>();
-        }
-
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (Map<UUID, Message>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            return new HashMap<>();
-        }
-    }
-
-    private void writeFile(Map<UUID, Message> data) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))){
-            oos.writeObject(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void save(Message message) {
-        Map<UUID, Message> data = readFile();
-        data.put(message.getId(), message);
-        writeFile(data);
-    }
-
-    @Override
-    public Message find(UUID id) {
-        return readFile().get(id);
->>>>>>> d75c693196078007ca3026d275fcc99c030c9eb8
     }
 
     @Override
     public List<Message> findAll() {
-<<<<<<< HEAD
         try {
             return Files.list(DIRECTORY)
                     .filter(path -> path.toString().endsWith(EXTENSION))
@@ -136,16 +96,5 @@ public class FileMessageRepository implements MessageRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-=======
-        return new ArrayList<>(readFile().values());
-    }
-
-    @Override
-    public void delete(UUID id) {
-        Map<UUID, Message> data = readFile();
-        data.remove(id);
-        writeFile(data);
-
->>>>>>> d75c693196078007ca3026d275fcc99c030c9eb8
     }
 }

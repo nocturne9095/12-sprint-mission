@@ -1,7 +1,2 @@
-<<<<<<< HEAD
-# 12-spring-mission
+# 0-spring-mission
 스프린트 미션 모범 답안 리포지토리입니다.
-=======
-\#README 샘플입니다.
-
->>>>>>> d75c693196078007ca3026d275fcc99c030c9eb8

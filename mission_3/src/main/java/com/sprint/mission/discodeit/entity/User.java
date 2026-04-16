@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
+@Getter
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +18,6 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    @Getter
     public User(String username, String email, String password) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now().getEpochSecond();

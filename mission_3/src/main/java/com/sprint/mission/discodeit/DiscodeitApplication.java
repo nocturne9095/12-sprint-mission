@@ -1,5 +1,9 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.ChannelRequest;
+import com.sprint.mission.discodeit.dto.ChannelResponse;
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.UserResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -24,24 +28,31 @@ public class DiscodeitApplication {
 		ChannelService channelService = context.getBean(ChannelService.class);
 		MessageService messageService = context.getBean(MessageService.class);
 
-		User user = setupUser(userService);
-		Channel channel = setupChannel(channelService);
+		UserResponse user = setupUser(userService);
+		ChannelResponse channel = setupChannel(channelService);
 
 		messageCreateTest(messageService, channel, user);
 	}
 
-	private static User setupUser(UserService userService) {
-		User user = userService.create("woody", "woody@codeit.com", "woody1234");
-		return user;
+	private static UserResponse setupUser(UserService userService) {
+		//DTO
+		UserCreateRequest request = new UserCreateRequest(
+				"woody", "woody@codeit.com", "woody1234", null
+		);
+
+
+		return userService.create(request);
 	}
 
-	public static Channel setupChannel(ChannelService channelService) {
-		Channel channel = channelService.create(ChannelType.PUBLIC, "공지", "공지 채널입니다.");
-		return channel;
+	public static ChannelResponse setupChannel(ChannelService channelService) {
+		ChannelRequest request = new ChannelRequest("공지", "공지 채널입니다.");
+		ChannelResponse channelResponse = channelService.create(request);
+
+		return channelResponse;
 	}
 
-	public static void messageCreateTest(MessageService messageService, Channel channel, User author) {
-		Message message = messageService.create("안녕하세요.", channel.getId(), author.getId());
+	public static void messageCreateTest(MessageService messageService, ChannelResponse channel, UserResponse author) {
+		Message message = messageService.create("안녕하세요.", channel.id(), author.id());
 		System.out.println("메시지 생성: " + message.getId());
 	}
 

@@ -31,7 +31,7 @@ public class BasicMessageService implements MessageService {
             throw new NoSuchElementException("Author not found with id " + authorId);
         }
 
-        Message message = new Message(content, channelId, authorId);
+        Message message = new Message(content, channelId, authorId, null);
         return messageRepository.save(message);
     }
 

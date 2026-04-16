@@ -65,6 +65,11 @@ public class FileUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByUsername(String username) {
+        return Optional.empty();
+    }
+
+    @Override
     public List<User> findAll() {
         try {
             return Files.list(DIRECTORY)
@@ -89,6 +94,16 @@ public class FileUserRepository implements UserRepository {
     public boolean existsById(UUID id) {
         Path path = resolvePath(id);
         return Files.exists(path);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return false;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return false;
     }
 
     @Override

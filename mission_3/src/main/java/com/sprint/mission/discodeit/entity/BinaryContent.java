@@ -12,14 +12,23 @@ public class BinaryContent implements Serializable {
 
     private final UUID id;
     private final Instant createdAt;
+    private Instant updatedAt;
     private final String fileName;
     private final byte[] data;
+    private UUID messageId;
 
     public BinaryContent(String fileName, byte[] data) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
         this.fileName = fileName;
         this.data = data;
+    }
+
+    //메세지랑 파일 연결할 때
+    public void updateMessageId(UUID messageId) {
+        this.messageId = messageId;
+        this.updatedAt = Instant.now();
     }
 
 }

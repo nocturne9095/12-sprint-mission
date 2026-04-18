@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit;
 
-import com.sprint.mission.discodeit.dto.ChannelRequest;
-import com.sprint.mission.discodeit.dto.ChannelResponse;
-import com.sprint.mission.discodeit.dto.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.UserResponse;
+import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -34,9 +31,10 @@ public class JavaApplication {
         return channel;
     }
 
-    static void messageCreateTest(MessageService messageService, Channel channel, User author) {
-        Message message = messageService.create("안녕하세요.", channel.getId(), author.getId());
-        System.out.println("메시지 생성: " + message.getId());
+    static void messageCreateTest(MessageService messageService, ChannelResponse channel, UserResponse author) {
+        MessageRequest request = new MessageRequest("안녕하세요.", channel.id(), author.id(), null);
+        MessageResponse response = messageService.create(request);
+        System.out.println("메시지 생성: " + response.id());
     }
 
     public static void main(String[] args) {
@@ -51,7 +49,8 @@ public class JavaApplication {
         // 서비스 초기화
         UserService userService = new BasicUserService(userRepository, userStatusRepository, binaryContentRepository);
         ChannelService channelService = new BasicChannelService(channelRepository, readStatusRepository, messageRepository);
-        MessageService messageService = new BasicMessageService(messageRepository, channelRepository, userRepository);
+        MessageService messageService = new BasicMessageService(messageRepository, channelRepository,
+                userRepository, binaryContentRepository);
 
         // 셋업
         UserResponse user = setupUser(userService);

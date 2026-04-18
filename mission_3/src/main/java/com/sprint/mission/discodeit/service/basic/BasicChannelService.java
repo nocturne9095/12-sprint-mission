@@ -100,7 +100,7 @@ public class BasicChannelService implements ChannelService {
 
     private ChannelResponse convertToResponse(Channel channel) {
         //해당 채널의 가장 최근 메세지 시간
-        LocalDateTime lastMessageAt = messageRepository.findByChannelId(channel.getId())
+        LocalDateTime lastMessageAt = messageRepository.findAllByChannelId(channel.getId())
                 .stream()
                 .map(Message::getCreatedAt)
                 .max((t1, t2) -> t1.compareTo(t2))      //Ambiguous 에러 방지

@@ -9,4 +9,5 @@ public interface BinaryContentRepository {
     BinaryContent save(BinaryContent binaryContent);
     Optional<BinaryContent> findById(UUID id);
     void deleteById(UUID id);
+    void deleteAllByMessageId(UUID messageId);
 }

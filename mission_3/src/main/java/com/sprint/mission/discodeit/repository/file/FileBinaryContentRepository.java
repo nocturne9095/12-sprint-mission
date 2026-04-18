@@ -28,4 +28,10 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
     public void deleteById(UUID id) {
         store.remove(id);
     }
+
+    @Override
+    public void deleteAllByMessageId(UUID messageId) {
+        store.values().removeIf(content -> content.getMessageId().equals(messageId)
+                                                    && content.getMessageId() != null);
+    }
 }

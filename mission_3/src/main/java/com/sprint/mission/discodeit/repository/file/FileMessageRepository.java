@@ -88,13 +88,13 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
-    public List<Message> findByChannelId(UUID channelId) {
+    public List<Message> findAllByChannelId(UUID channelId) {
         return findAll().stream()
-                .filter(message -> message.getChannelId().equals(channelId))
+                .filter(message -> message.getChannelId().equals(channelId)
+                                        && message.getChannelId() != null)
                 .toList();
+
     }
-
-
 
     @Override
     public boolean existsById(UUID id) {
@@ -115,7 +115,7 @@ public class FileMessageRepository implements MessageRepository {
     @Override
     public void deleteAllByChannelId(UUID channelId) {
         //해당 채널의 메세지만 삭제
-       List<Message> targetMessages = findByChannelId(channelId);
+       List<Message> targetMessages = findAllByChannelId(channelId);
        targetMessages.forEach(message -> deleteById(message.getId()));
     }
 }

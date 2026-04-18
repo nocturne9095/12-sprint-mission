@@ -19,7 +19,7 @@ public class ReadStatus implements Serializable {
     private final UUID channelId;
     private Instant lastReadAt;
 
-    public ReadStatus(UUID userId, UUID channelId) {
+    public ReadStatus(UUID userId, UUID channelId, Instant lastReadAt) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
@@ -29,7 +29,7 @@ public class ReadStatus implements Serializable {
         this.lastReadAt = Instant.now();
     }
 
-    public void updateLastReadAt() {
+    public void updateLastReadAt(Instant lastReadAt) {
         this.lastReadAt = Instant.now();
         this.updatedAt = Instant.now();
     }

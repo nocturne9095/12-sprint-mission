@@ -43,7 +43,7 @@ public class BasicChannelService implements ChannelService {
         channelRepository.save(channel);
 
         request.memberIds().forEach(userId -> {
-            ReadStatus readStatus = new ReadStatus(userId, channel.getId());
+            ReadStatus readStatus = new ReadStatus(userId, channel.getId(), java.time.Instant.now());
             readStatusRepository.save(readStatus);
         });
 
@@ -61,7 +61,7 @@ public class BasicChannelService implements ChannelService {
     @Override
     public List<ChannelResponse> findAllByUserId(UUID userId) {
         List<Channel> allChannels = channelRepository.findAll();
-        List<UUID> joinedChannelIds = readStatusRepository.findByUserId(userId)
+        List<UUID> joinedChannelIds = readStatusRepository.findAllByUserId(userId)
                 .stream()
                 .map(ReadStatus::getChannelId)
                 .toList();

@@ -15,8 +15,39 @@ public class FileReadStatusRepository implements ReadStatusRepository {
 
     @Override
     public ReadStatus save(ReadStatus readStatus) {
+        readStatusList.removeIf(status -> status.getId().equals(readStatus.getId()));
         readStatusList.add(readStatus);
         return readStatus;
+    }
+
+    @Override
+    public Optional<ReadStatus> findById(UUID id) {
+        return readStatusList.stream()
+                .filter(status -> status.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return readStatusList.stream()
+                .anyMatch(status -> status.getId().equals(id));
+    }
+
+    @Override
+    public boolean existsByUserIdAndChannelId(UUID userId, UUID channelId) {
+        return findByUserIdAndChannelId(userId, channelId).isPresent();
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        readStatusList.removeIf(status -> status.getId().equals(id));
+    }
+
+    @Override
+    public List<ReadStatus> findAllByUserId(UUID userId) {
+        return  readStatusList.stream()
+                .filter(status -> status.getUserId().equals(userId))
+                .toList();
     }
 
     @Override
@@ -24,13 +55,6 @@ public class FileReadStatusRepository implements ReadStatusRepository {
         return readStatusList.stream()
                 .filter(status -> status.getUserId().equals(userId) && status.getChannelId().equals(channelId))
                 .findFirst();
-    }
-
-    @Override
-    public List<ReadStatus> findByUserId(UUID userId) {
-        return  readStatusList.stream()
-                .filter(status -> status.getUserId().equals(userId))
-                .toList();
     }
 
     @Override

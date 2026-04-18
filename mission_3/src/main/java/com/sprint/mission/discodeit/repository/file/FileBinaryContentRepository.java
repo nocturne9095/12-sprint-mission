@@ -4,10 +4,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class FileBinaryContentRepository implements BinaryContentRepository {
@@ -22,6 +19,18 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
     @Override
     public Optional<BinaryContent> findById(UUID id) {
         return Optional.ofNullable(store.get(id));
+    }
+
+    @Override
+    public List<BinaryContent> findAllById(List<UUID> ids) {
+        return store.values().stream()
+                .filter(content -> ids.contains(content.getId()))
+                .toList();
+    }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return store.containsKey(id);
     }
 
     @Override

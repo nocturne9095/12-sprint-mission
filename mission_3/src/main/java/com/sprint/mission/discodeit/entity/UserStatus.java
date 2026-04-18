@@ -15,15 +15,17 @@ public class UserStatus implements Serializable {
     private Instant updatedAt;
 
     private final UUID userId;
+    private String statusMessage;
     private Instant lastOnlineAt;
 
-    public UserStatus(UUID userId) {
+    public UserStatus(UUID userId, String statusMessage) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
 
         this.userId = userId;
         this.lastOnlineAt = Instant.now();
+        this.statusMessage = statusMessage;
     }
 
     public void updateLastOnlineAt() {
@@ -34,6 +36,11 @@ public class UserStatus implements Serializable {
     public boolean isOnline() {
         Instant fiveMinutesAgo = Instant.now().minusSeconds(300);
         return this.lastOnlineAt.isAfter(fiveMinutesAgo);
+    }
+
+    public void update(String statusMessage) {
+        this.statusMessage = statusMessage;
+        this.updatedAt = Instant.now();
     }
 
 }

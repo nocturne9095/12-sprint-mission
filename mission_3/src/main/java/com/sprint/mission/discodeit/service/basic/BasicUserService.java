@@ -49,7 +49,7 @@ public class BasicUserService implements UserService {
         User user = new User(request.username(), request.email(), request.password(), profileImageId);
         userRepository.save(user);
 
-        UserStatus status = new UserStatus(user.getId());
+        UserStatus status = new UserStatus(user.getId(), "");
         userStatusRepository.save(status);
 
         return convertToResponse(user, status);

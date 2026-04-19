@@ -1,0 +1,67 @@
+package com.sprint.mission.discodeit.repository.jcf;
+
+import com.sprint.mission.discodeit.entity.ReadStatus;
+import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.*;
+
+@Repository
+public class JCFReadStatusRepository implements ReadStatusRepository {
+    private final Map<UUID, ReadStatus> data = new HashMap<>();
+
+    @Override
+    public ReadStatus save(ReadStatus readStatus) {
+        data.put(readStatus.getId(), readStatus);
+        return readStatus;
+    }
+
+    @Override
+    public Optional<ReadStatus> findByUserIdAndChannelId(UUID userId, UUID channelId) {
+        return data.values().stream()
+                .filter(status -> userId.equals(status.getUserId()) && channelId.equals(status.getChannelId()))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<ReadStatus> findById(UUID id) {
+        return Optional.ofNullable(data.get(id));
+    }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return data.containsKey(id);
+    }
+
+    @Override
+    public boolean existsByUserIdAndChannelId(UUID userId, UUID channelId) {
+        return data.values().stream()
+                .anyMatch(status -> userId.equals(status.getUserId()) && channelId.equals(status.getChannelId()));
+    }
+
+    @Override
+    public List<ReadStatus> findAllByUserId(UUID userId) {
+        return data.values().stream()
+                .filter(status -> userId.equals(status.getUserId()))
+                .toList();
+    }
+
+    @Override
+    public List<ReadStatus> findByChannelId(UUID channelId) {
+        return data.values().stream()
+                .filter(status -> channelId.equals(status.getChannelId()))
+                .toList();
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        data.remove(id);
+
+    }
+
+    @Override
+    public void deleteByChannelId(UUID channelId) {
+        data.values().removeIf(status -> channelId.equals(status.getChannelId()));
+
+    }
+}

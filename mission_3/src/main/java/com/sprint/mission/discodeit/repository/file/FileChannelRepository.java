@@ -95,9 +95,9 @@ public class FileChannelRepository implements ChannelRepository {
     public void deleteById(UUID id) {
         Path path = resolvePath(id);
         try {
-            Files.delete(path);
+            Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error deleting channel file : " + id,e);
         }
     }
 }

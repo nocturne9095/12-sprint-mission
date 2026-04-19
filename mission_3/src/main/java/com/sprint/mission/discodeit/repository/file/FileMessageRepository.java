@@ -66,6 +66,7 @@ public class FileMessageRepository implements MessageRepository {
         return Optional.ofNullable(messageNullable);
     }
 
+
     @Override
     public List<Message> findAll() {
         try {
@@ -90,8 +91,7 @@ public class FileMessageRepository implements MessageRepository {
     @Override
     public List<Message> findAllByChannelId(UUID channelId) {
         return findAll().stream()
-                .filter(message -> message.getChannelId().equals(channelId)
-                                        && message.getChannelId() != null)
+                .filter(message -> channelId.equals(message.getChannelId()))
                 .toList();
 
     }
@@ -116,6 +116,14 @@ public class FileMessageRepository implements MessageRepository {
     public void deleteAllByChannelId(UUID channelId) {
         //해당 채널의 메세지만 삭제
        List<Message> targetMessages = findAllByChannelId(channelId);
-       targetMessages.forEach(message -> deleteById(message.getId()));
+       targetMessages.forEach(message -> {
+           try {
+               Files.deleteIfExists(resolvePath(message.getId()));
+           } catch (IOException e) {
+               throw new RuntimeException("failed to delete message file : " + message.getId(), e);
+           }
+               }
+
+               );
     }
 }

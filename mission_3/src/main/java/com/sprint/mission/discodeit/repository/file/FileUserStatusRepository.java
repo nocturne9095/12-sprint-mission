@@ -4,57 +4,104 @@ import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import org.springframework.stereotype.Repository;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Repository
 public class FileUserStatusRepository implements UserStatusRepository {
-    private final List<UserStatus> userStatusList = new ArrayList<>();
+    private final Path DIRECTORY;
+    private final String EXTENSION = ".ser";
+
+    public FileUserStatusRepository() {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", UserStatus.class.getSimpleName());
+        if (Files.notExists(DIRECTORY)) {
+            try {
+                Files.createDirectories(DIRECTORY);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create directory",e);
+            }
+        }
+    }
+
+    private Path resolvePath(UUID id) {
+        return DIRECTORY.resolve(id + EXTENSION);
+    }
+
 
     @Override
     public UserStatus save(UserStatus userStatus) {
-        userStatusList.removeIf(status -> status.getId().equals(userStatus.getId()));
-        userStatusList.add(userStatus);
+        Path path = resolvePath(userStatus.getId());
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path.toFile()))){
+            oos.writeObject(userStatus);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return userStatus;
     }
 
     @Override
     public Optional<UserStatus> findById(UUID id) {
-        return userStatusList.stream()
-                .filter(status -> status.getId().equals(id))
-                .findFirst();
+      Path path = resolvePath(id);
+      if (Files.exists(path)) {
+          try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toFile()))){
+              return Optional.of((UserStatus) ois.readObject());
+          } catch (IOException | ClassNotFoundException e) {
+              throw new RuntimeException(e);
+          }
+      }
+      return Optional.empty();
     }
 
     @Override
     public Optional<UserStatus> findByUserId(UUID userId) {
-        return userStatusList.stream()
-                .filter(status -> status.getUserId().equals(userId))
-                .findFirst();
+      return findAll().stream()
+              .filter(status -> userId.equals(status.getUserId()))
+              .findFirst();
     }
 
     @Override
     public List<UserStatus> findAll() {
-        return new ArrayList<>(userStatusList);
+        try {
+            return Files.list(DIRECTORY)
+                    .filter(path -> path.toString().endsWith(EXTENSION))
+                    .map(path -> {
+                        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toFile()))) {
+                            return (UserStatus) ois.readObject();
+                        } catch (IOException | ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public boolean existsById(UUID id) {
-        return userStatusList.stream()
-                .anyMatch(status -> status.getId().equals(id));
+        return Files.exists(resolvePath(id));
     }
 
     @Override
     public boolean existsByUserId(UUID userId) {
-        return userStatusList.stream()
-                .anyMatch(status -> status.getUserId().equals(userId));
+        return findAll().stream()
+                .anyMatch(status -> userId.equals(status.getUserId()));
     }
 
     @Override
     public void deleteById(UUID id) {
-        userStatusList.removeIf(status -> status.getId().equals(id));
+        try {
+            Files.deleteIfExists(resolvePath(id));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void deleteByUserId(UUID userId) {
-        userStatusList.removeIf(status -> status.getUserId().equals(userId));
+       findByUserId(userId).ifPresent(status -> deleteById(status.getId()));
     }
 }

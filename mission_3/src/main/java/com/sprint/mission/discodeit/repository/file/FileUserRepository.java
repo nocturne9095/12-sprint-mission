@@ -66,7 +66,9 @@ public class FileUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return Optional.empty();
+        return findAll().stream()
+                .filter(user -> username.equals(user.getUsername()))
+                .findFirst();
     }
 
     @Override
@@ -98,12 +100,14 @@ public class FileUserRepository implements UserRepository {
 
     @Override
     public boolean existsByEmail(String email) {
-        return false;
+        return findAll().stream()
+                .anyMatch(user -> email.equals(user.getEmail()));
     }
 
     @Override
     public boolean existsByUsername(String username) {
-        return false;
+        return findAll().stream()
+                .anyMatch(user -> username.equals(user.getUsername()));
     }
 
     @Override

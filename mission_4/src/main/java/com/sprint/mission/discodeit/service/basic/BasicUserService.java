@@ -29,7 +29,7 @@ public class BasicUserService implements UserService {
     private final UserStatusRepository userStatusRepository;
 
     @Override
-    public User create(UserCreateRequest userCreateRequest, Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
+    public UserDto create(UserCreateRequest userCreateRequest, Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
         String username = userCreateRequest.username();
         String email = userCreateRequest.email();
 
@@ -58,7 +58,9 @@ public class BasicUserService implements UserService {
         UserStatus userStatus = new UserStatus(createdUser.getId(), now);
         userStatusRepository.save(userStatus);
 
-        return createdUser;
+        return new UserDto(
+                createdUser.getId(), createdUser.getCreatedAt(),
+                createdUser.getUpdatedAt(), createdUser.getUsername(), createdUser.getEmail(), createdUser.getProfileId(), null);
     }
 
     @Override
@@ -121,10 +123,19 @@ public class BasicUserService implements UserService {
         userRepository.deleteById(userId);
     }
 
+    @Override
+    public void updateUserStatus(UUID userId) {
+        UserStatus userStatus = userStatusRepository.findById(userId)
+                .orElseGet(() -> new UserStatus(userId, Instant.now()));
+        userStatus.update(Instant.now());
+        userStatusRepository.save(userStatus);
+
+    }
+
     private UserDto toDto(User user) {
         Boolean online = userStatusRepository.findByUserId(user.getId())
                 .map(UserStatus::isOnline)
-                .orElse(null);
+                .orElse(false);
 
         return new UserDto(
                 user.getId(),

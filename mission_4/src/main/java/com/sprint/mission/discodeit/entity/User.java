@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String email;
     private String password;
     private UUID profileId;     // BinaryContent
+    private Boolean online = false;     // online status
 
     public User(String username, String email, String password, UUID profileId) {
         this.id = UUID.randomUUID();
@@ -52,4 +53,9 @@ public class User implements Serializable {
             this.updatedAt = Instant.now();
         }
     }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
+    }
+
 }

@@ -8,13 +8,14 @@ import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -23,6 +24,13 @@ public class UserController {
     public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
         this.authService = authService;
+    }
+
+    //심화 요구 사항 :  url: /api/user/findAll
+    @GetMapping("/findAll")
+    public ResponseEntity<List<UserDto>> findAll() {
+        List<UserDto> userDtoList = userService.findAll();
+        return ResponseEntity.ok(userDtoList);
     }
 
     //사용자 조회
@@ -52,7 +60,7 @@ public class UserController {
                 updateUser.getUsername(),
                 updateUser.getEmail(),
                 updateUser.getProfileId(),
-                null
+                updateUser.getOnline()
         );
     }
 

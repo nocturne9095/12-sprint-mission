@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: discodeit
+
+discodeit:
+  repository:
+    type : jcf              #jcf | file
+    file-directory: .discodeit
+
+
+logging:
+  level:
+    org.springframework.boot.autoconfigure.logging: DEBUG
+    com.sprint.mission.discodeit: DEBUG
+
+
+server:
+  port: 8080

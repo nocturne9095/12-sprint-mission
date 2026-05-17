@@ -9,9 +9,8 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
-import com.sprint.mission.discodeit.mapper.PagingMapper;
+import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -40,7 +39,7 @@ public class BasicMessageService implements MessageService {
   private final BinaryContentStorage binaryContentStorage;
 
   private final MessageMapper messageMapper;
-  private final PagingMapper pagingMapper;
+  private final PageResponseMapper pageResponseMapper;
 
   @Transactional
   @Override
@@ -96,14 +95,13 @@ public class BasicMessageService implements MessageService {
   @Override
   public PageResponse<MessageDto> findAllByChannelId(UUID channelId, Pageable pageable) {
     Slice<Message> messageSlice = messageRepository.findSliceByChannelId(channelId, pageable);
-
     List<MessageDto> messageDtos = messageSlice.getContent().stream()
         .map(messageMapper::toDto)
         .toList();
-    return pagingMapper.toPageResponse(messageSlice, messageDtos);
+    return pageResponseMapper.fromSlice(messageSlice, messageDtos);
   }
 
-
+  @Transactional
   @Override
   public Message update(UUID messageId, MessageUpdateRequest request) {
     String newContent = request.newContent();
@@ -114,6 +112,7 @@ public class BasicMessageService implements MessageService {
     return message;
   }
 
+  @Transactional
   @Override
   public void delete(UUID messageId) {
     Message message = messageRepository.findById(messageId)

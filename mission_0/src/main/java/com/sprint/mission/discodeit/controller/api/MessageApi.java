@@ -80,7 +80,8 @@ public interface MessageApi {
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200", description = "Message 목록 조회 성공",
-          content = @Content(schema = @Schema(implementation = PageResponse.class))
+          content = @Content(schema = @Schema(
+              implementation = PageResponse.class, anyOf = {MessageDto.class}))
       )
   })
   ResponseEntity<PageResponse<MessageDto>> findAllByChannelId(

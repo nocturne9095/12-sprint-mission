@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.UserStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
@@ -13,7 +14,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class BasicUserStatusService implements UserStatusService {
@@ -25,18 +28,20 @@ public class BasicUserStatusService implements UserStatusService {
   public UserStatus create(UserStatusCreateRequest request) {
     UUID userId = request.userId();
 
-    if (!userRepository.existsById(userId)) {
-      throw new NoSuchElementException("User with id " + userId + " does not exist");
-    }
+    User user = userRepository.findById(userId)
+        .orElseThrow(
+            () -> new NoSuchElementException("User with id " + userId + " does not exist"));
+
     if (userStatusRepository.findByUserId(userId).isPresent()) {
       throw new IllegalArgumentException("UserStatus with id " + userId + " already exists");
     }
 
     Instant lastActiveAt = request.lastActiveAt();
-    UserStatus userStatus = new UserStatus(userId, lastActiveAt);
+    UserStatus userStatus = new UserStatus(user, lastActiveAt);
     return userStatusRepository.save(userStatus);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public UserStatus find(UUID userStatusId) {
     return userStatusRepository.findById(userStatusId)
@@ -44,6 +49,7 @@ public class BasicUserStatusService implements UserStatusService {
             () -> new NoSuchElementException("UserStatus with id " + userStatusId + " not found"));
   }
 
+  @Transactional(readOnly = true)
   @Override
   public List<UserStatus> findAll() {
     return userStatusRepository.findAll().stream()
@@ -59,7 +65,7 @@ public class BasicUserStatusService implements UserStatusService {
             () -> new NoSuchElementException("UserStatus with id " + userStatusId + " not found"));
     userStatus.update(newLastActiveAt);
 
-    return userStatusRepository.save(userStatus);
+    return userStatus;
   }
 
   @Override
@@ -71,7 +77,7 @@ public class BasicUserStatusService implements UserStatusService {
             () -> new NoSuchElementException("UserStatus with userId " + userId + " not found"));
     userStatus.update(newLastActiveAt);
 
-    return userStatusRepository.save(userStatus);
+    return userStatus;
   }
 
   @Override

@@ -2,7 +2,9 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -14,7 +16,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
+
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class BasicReadStatusService implements ReadStatusService {
@@ -35,18 +40,26 @@ public class BasicReadStatusService implements ReadStatusService {
       throw new NoSuchElementException("Channel with id " + channelId + " does not exist");
     }
 
-    return readStatusRepository.findAllByUserId(userId).stream()
-        .filter(readStatus -> readStatus.getChannelId().equals(channelId))
-        .findFirst()
-        .orElseGet(
-            () -> {
+    return readStatusRepository.findByUserIdAndChannelId(userId, channelId)
+        .orElseGet(() -> {
               Instant lastReadAt = request.lastReadAt();
-              ReadStatus readStatus = new ReadStatus(userId, channelId, lastReadAt);
+
+              User user = userRepository.findById(userId)
+                  .orElseThrow(() -> new NoSuchElementException(
+                      "User with id " + userId + " does not exist"));
+
+              Channel channel = channelRepository.findById(channelId)
+                  .orElseThrow(() -> new NoSuchElementException(
+                      "Channel with id " + channelId + " does not exist"));
+
+              ReadStatus readStatus = new ReadStatus(user, channel, lastReadAt);
+
               return readStatusRepository.save(readStatus);
             }
         );
   }
 
+  @Transactional(readOnly = true)
   @Override
   public ReadStatus find(UUID readStatusId) {
     return readStatusRepository.findById(readStatusId)
@@ -54,9 +67,10 @@ public class BasicReadStatusService implements ReadStatusService {
             () -> new NoSuchElementException("ReadStatus with id " + readStatusId + " not found"));
   }
 
+  @Transactional(readOnly = true)
   @Override
   public List<ReadStatus> findAllByUserId(UUID userId) {
-    return readStatusRepository.findAllByUserId(userId).stream()
+    return readStatusRepository.findByUserId(userId).stream()
         .toList();
   }
 
@@ -67,7 +81,7 @@ public class BasicReadStatusService implements ReadStatusService {
         .orElseThrow(
             () -> new NoSuchElementException("ReadStatus with id " + readStatusId + " not found"));
     readStatus.update(newLastReadAt);
-    return readStatusRepository.save(readStatus);
+    return readStatus;
   }
 
   @Override
